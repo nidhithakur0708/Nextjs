@@ -1,0 +1,240 @@
+ <!--recent quote -->
+<div class="widget-quote-block" *ngIf="showRecentQuote && !IsCallCenterUser" [ngClass]="{ 'hide': !isMobile }">
+  <div class="widget-label"><p>Your recent quote</p></div>
+  <div class="widget-quote-sec">
+
+    <div class="widget-quote-left">
+      <div class="widget-quote-title">
+        <span class="widget-quote-logo">
+          <img *ngIf="filteredQuote.productType === 'elevate'" src="/docs/default-source/assets/retrieve-quote/health/images/recent-quote-elevate.svg">
+          <img *ngIf="filteredQuote.productType === 'ab'" src="/docs/default-source/assets/retrieve-quote/health/images/recent-quote-abc.svg">
+          <img *ngIf="filteredQuote.productType === 'abc'" src="/docs/default-source/assets/retrieve-quote/health/images/recent-quote-abc.svg">
+        </span>
+        <h5>{{filteredQuote?.productType === 'abc' ? 'Combo ' : ''}}Health insurance</h5>
+      </div>
+
+      <div class="widget-quote-details">
+        <p>SI: <span class="widget-quote-amnt">{{ filteredQuote.healthAdditionalInfo?.sumInsured | indianCurrency }}</span></p>
+        <p>Premium: <span class="widget-quote-amnt">{{ filteredQuote.premium?.totalPremium | indianCurrency }}</span></p>
+      </div>
+    </div>
+
+    <div class="widget-quote-right">
+      <button type="button" class="secondary-btn" (click)="continueWithQuote()">
+        Continue <span><img src="assets/images/btn-right-arrow.svg"></span>
+      </button>
+    </div>
+  </div>
+</div>
+<!--recent quote -->
+
+<div class="widget-content-body bg-white">
+  <div class="widget-content {{activeShow}}" id="landingMaxProtec">
+
+    <div class="main-holder">
+      <ng-container *ngIf="dataLoaded && isLoginTypeUser; else elseBlock">
+        <app-get-quote [selectedpolicyType]="selectedpolicyType"
+                       [sessionCallBackHealthData]="sessionCallBackHealthData"
+                       [CCMobileNumber]="CCMobileNo"
+                       [CCEmailID]="CCEmailID"
+                       (childGetQuoteEvent)="onChildGetQuoteEvent($event)"
+                       (childErrorPopupEvent)="onChildErrorPopupEvent($event)"
+                       (childMobileNoEvent)="onChildMobileNoEvent($event)"
+                       [elevateOrionTaggedUrl]="elevateOrionTaggedUrl"></app-get-quote>
+      </ng-container>
+      <ng-template #elseBlock>
+        <app-get-quote [selectedpolicyType]="selectedpolicyType"
+                       [sessionCallBackHealthData]="sessionCallBackHealthData"
+                       (childGetQuoteEvent)="onChildGetQuoteEvent($event)"
+                       (childErrorPopupEvent)="onChildErrorPopupEvent($event)"
+                       (childMobileNoEvent)="onChildMobileNoEvent($event)"
+                       [elevateOrionTaggedUrl]="elevateOrionTaggedUrl"
+                       [abcOrionTaggedUrl]="abcOrionTaggedUrl"></app-get-quote>
+      </ng-template>
+    </div>
+
+    <div class="widget-quote-wrap">
+      <!--recent quote -->
+      <div class="widget-quote-block" *ngIf="showRecentQuote && !IsCallCenterUser"  [ngClass]="{ 'hide': isMobile }">
+        <div class="widget-label"><p>Your recent quote</p></div>
+        <div class="widget-quote-sec">
+
+          <div class="widget-quote-left">
+            <div class="widget-quote-title">
+              <span class="widget-quote-logo">
+                <img *ngIf="filteredQuote.productType === 'elevate'" src="/docs/default-source/assets/retrieve-quote/health/images/widget-recent-quote-elevate.svg">
+                <img *ngIf="filteredQuote.productType === 'ab'" src="/docs/default-source/assets/retrieve-quote/health/images/widget-recent-quote-ab.svg">
+                <img *ngIf="filteredQuote.productType === 'abc'" src="/docs/default-source/assets/retrieve-quote/health/images/widget-recent-quote-abc.svg">
+              </span>
+              <h5>{{filteredQuote?.productType === 'abc' ? 'Combo ' : ''}}Health insurance</h5>
+            </div>
+
+            <div class="widget-quote-details">
+              <p>SI: <span class="widget-quote-amnt">{{ formatSumInsured(filteredQuote.healthAdditionalInfo?.sumInsured) }}</span></p>
+              <p>Premium: <span class="widget-quote-amnt">{{ filteredQuote.premium?.totalPremium | indianCurrency }}</span></p>
+            </div>
+          </div>
+
+          <div class="widget-quote-right">
+            <button type="button" class="secondary-btn" (click)="continueWithQuote()">
+              Continue <span><img src="/docs/default-source/assets/retrieve-quote/health/images/btn-right-arrow.svg"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!--recent quote -->
+      <div class="bottom_links gst-landing-wrap">
+        <!--<div class="form-group" *ngIf="(selectedpolicyType == 'elevate') || (selectedpolicyType == 'abc') || (selectedpolicyType == 'ab') || (selectedpolicyType == 'hap')">
+          <input type="checkbox"
+                 id="newGst"
+                 class="ng-valid ng-dirty ng-touched"
+                 data-gtm-form-interact-field-id="0"
+                 [(ngModel)]="availGstBenefit"
+                 [checked]="availGstBenefit"
+                 (click)="availNilGstBenefit($event)" />
+          <label for="newGst">
+            <span>
+              I choose to begin my policy on September 22, 2025 to avail of a <span class="grn-lbl">0% GST rate</span><span href="javascript:void(0);" class="port-tooltip-icon" style="">
+              <picture>
+                  <source media="(max-width:767px)" srcset="
+                          data:image/svg+xml;base64,
+                          PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04LjAwMDAxIDEuMjczODJDNC4yOTExOSAxLjI3MzgyIDEuMjczODUgNC4yOTExOCAxLjI3Mzg1IDcuOTk5OTdDMS4yNzM4NSAxMS43MDg4IDQuMjkxMTkgMTQuNzI2MSA4LjAwMDAxIDE0LjcyNjFDMTEuNzA4OSAxNC43MjYxIDE0LjcyNjIgMTEuNzA4OCAxNC43MjYyIDcuOTk5OTdDMTQuNzI2MiA0LjI5MTE4IDExLjcwODkgMS4yNzM4MiA4LjAwMDAxIDEuMjczODJaTTggMTZDMy41ODg3OCAxNiAwIDEyLjQxMTIgMCA3Ljk5OTk3QzAgMy41ODg3NyAzLjU4ODc4IDAgOCAwQzEyLjQxMTIgMCAxNiAzLjU4ODc3IDE2IDcuOTk5OTdDMTYgMTIuNDExMiAxMi40MTEyIDE2IDggMTZaIiBmaWxsPSIjNTk1OTU5Ii8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNNy45OTk2OCAxMi45NTY2QzcuNjg3NDIgMTIuOTU2NiA3LjQyMzcgMTIuODI5MyA3LjQxMDA4IDEyLjY2NTVMNi45NDI0MSA3LjAzMzI0QzYuODk1NjUgNi40NzAyNCA3LjM2NzI2IDUuOTc1OTUgNy45OTk2OCA1Ljk3NTk1QzguNjMyMSA1Ljk3NTk1IDkuMTAzNzIgNi40NzAyNCA5LjA1Njk3IDcuMDMzMjRMOC41ODkyNiAxMi42NjU1QzguNTc1NjUgMTIuODI5MyA4LjMxMTk1IDEyLjk1NjYgNy45OTk2OCAxMi45NTY2WiIgZmlsbD0iIzU5NTk1OSIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTguOTExOTMgNC4xNzQ5N0M4LjkxMTkzIDQuNjc4NzQgOC41MDM1NCA1LjA4NzEgNy45OTk3OCA1LjA4NzFDNy40OTYwMSA1LjA4NzEgNy4wODc2NSA0LjY3ODc0IDcuMDg3NjUgNC4xNzQ5N0M3LjA4NzY1IDMuNjcxMiA3LjQ5NjAxIDMuMjYyODIgNy45OTk3OCAzLjI2MjgyQzguNTAzNTQgMy4yNjI4MiA4LjkxMTkzIDMuNjcxMiA4LjkxMTkzIDQuMTc0OTdaIiBmaWxsPSIjNTk1OTU5Ii8+Cjwvc3ZnPgo=
+                      ">
+                  <img alt="" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04LjAwMDAxIDEuMjczODJDNC4yOTExOSAxLjI3MzgyIDEuMjczODUgNC4yOTExOCAxLjI3Mzg1IDcuOTk5OTdDMS4yNzM4NSAxMS43MDg4IDQuMjkxMTkgMTQuNzI2MSA4LjAwMDAxIDE0LjcyNjFDMTEuNzA4OSAxNC43MjYxIDE0LjcyNjIgMTEuNzA4OCAxNC43MjYyIDcuOTk5OTdDMTQuNzI2MiA0LjI5MTE4IDExLjcwODkgMS4yNzM4MiA4LjAwMDAxIDEuMjczODJaTTggMTZDMy41ODg3OCAxNiAwIDEyLjQxMTIgMCA3Ljk5OTk3QzAgMy41ODg3NyAzLjU4ODc4IDAgOCAwQzEyLjQxMTIgMCAxNiAzLjU4ODc3IDE2IDcuOTk5OTdDMTYgMTIuNDExMiAxMi40MTEyIDE2IDggMTZaIiBmaWxsPSIjNTk1OTU5Ii8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNNy45OTk2OCAxMi45NTY2QzcuNjg3NDIgMTIuOTU2NiA3LjQyMzcgMTIuODI5MyA3LjQxMDA4IDEyLjY2NTVMNi45NDI0MSA3LjAzMzI0QzYuODk1NjUgNi40NzAyNCA3LjM2NzI2IDUuOTc1OTUgNy45OTk2OCA1Ljk3NTk1QzguNjMyMSA1Ljk3NTk1IDkuMTAzNzIgNi40NzAyNCA5LjA1Njk3IDcuMDMzMjRMOC41ODkyNiAxMi42NjU1QzguNTc1NjUgMTIuODI5MyA4LjMxMTk1IDEyLjk1NjYgNy45OTk2OCAxMi45NTY2WiIgZmlsbD0iIzU5NTk1OSIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTguOTExOTMgNC4xNzQ5N0M4LjkxMTkzIDQuNjc4NzQgOC41MDM1NCA1LjA4NzEgNy45OTk3OCA1LjA4NzFDNy40OTYwMSA1LjA4NzEgNy4wODc2NSA0LjY3ODc0IDcuMDg3NjUgNC4xNzQ5N0M3LjA4NzY1IDMuNjcxMiA3LjQ5NjAxIDMuMjYyODIgNy45OTk3OCAzLjI2MjgyQzguNTAzNTQgMy4yNjI4MiA4LjkxMTkzIDMuNjcxMiA4LjkxMTkzIDQuMTc0OTdaIiBmaWxsPSIjNTk1OTU5Ii8+Cjwvc3ZnPgo=">
+              </picture>
+              <span class="port-tooltipTxt"> As per regulations, individual and family floater health insurance policies will attract 0% GST on or after September 22, 2025 </span>
+              </span>
+            </span>
+          </label>
+        </div>-->
+
+        <div class="port_policy_div">
+          <ng-container *ngIf="(selectedpolicyType == 'hap') || (selectedpolicyType == 'elevate' && !IsCallCenterUser)">
+            <a class="link-btn port_link" (click)="onPortExistingClick()">
+              Port existing policy
+            </a>
+            <span href="javascript:void(0);" class="port-tooltip-icon">
+              <picture>
+                <source media="(max-width:767px)"
+                        srcset="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04LjAwMDAxIDEuMjczODJDNC4yOTExOSAxLjI3MzgyIDEuMjczODUgNC4yOTExOCAxLjI3Mzg1IDcuOTk5OTdDMS4yNzM4NSAxMS43MDg4IDQuMjkxMTkgMTQuNzI2MSA4LjAwMDAxIDE0LjcyNjFDMTEuNzA4OSAxNC43MjYxIDE0LjcyNjIgMTEuNzA4OCAxNC43MjYyIDcuOTk5OTdDMTQuNzI2MiA0LjI5MTE4IDExLjcwODkgMS4yNzM4MiA4LjAwMDAxIDEuMjczODJaTTggMTZDMy41ODg3OCAxNiAwIDEyLjQxMTIgMCA3Ljk5OTk3QzAgMy41ODg3NyAzLjU4ODc4IDAgOCAwQzEyLjQxMTIgMCAxNiAzLjU4ODc3IDE2IDcuOTk5OTdDMTYgMTIuNDExMiAxMi40MTEyIDE2IDggMTZaIiBmaWxsPSIjNTk1OTU5Ii8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNNy45OTk2OCAxMi45NTY2QzcuNjg3NDIgMTIuOTU2NiA3LjQyMzcgMTIuODI5MyA3LjQxMDA4IDEyLjY2NTVMNi45NDI0MSA3LjAzMzI0QzYuODk1NjUgNi40NzAyNCA3LjM2NzI2IDUuOTc1OTUgNy45OTk2OCA1Ljk3NTk1QzguNjMyMSA1Ljk3NTk1IDkuMTAzNzIgNi40NzAyNCA5LjA1Njk3IDcuMDMzMjRMOC41ODkyNiAxMi42NjU1QzguNTc1NjUgMTIuODI5MyA4LjMxMTk1IDEyLjk1NjYgNy45OTk2OCAxMi45NTY2WiIgZmlsbD0iIzU5NTk1OSIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTguOTExOTMgNC4xNzQ5N0M4LjkxMTkzIDQuNjc4NzQgOC41MDM1NCA1LjA4NzEgNy45OTk3OCA1LjA4NzFDNy40OTYwMSA1LjA4NzEgNy4wODc2NSA0LjY3ODc0IDcuMDg3NjUgNC4xNzQ5N0M3LjA4NzY1IDMuNjcxMiA3LjQ5NjAxIDMuMjYyODIgNy45OTk3OCAzLjI2MjgyQzguNTAzNTQgMy4yNjI4MiA4LjkxMTkzIDMuNjcxMiA4LjkxMTkzIDQuMTc0OTdaIiBmaWxsPSIjNTk1OTU5Ii8+Cjwvc3ZnPgo=" />
+
+                <img alt=""
+                     src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04LjAwMDAxIDEuMjczODJDNC4yOTExOSAxLjI3MzgyIDEuMjczODUgNC4yOTExOCAxLjI3Mzg1IDcuOTk5OTdDMS4yNzM4NSAxMS43MDg4IDQuMjkxMTkgMTQuNzI2MSA4LjAwMDAxIDE0LjcyNjFDMTEuNzA4OSAxNC43MjYxIDE0LjcyNjIgMTEuNzA4OCAxNC43MjYyIDcuOTk5OTdDMTQuNzI2MiA0LjI5MTE4IDExLjcwODkgMS4yNzM4MiA4LjAwMDAxIDEuMjczODJaTTggMTZDMy41ODg3OCAxNiAwIDEyLjQxMTIgMCA3Ljk5OTk3QzAgMy41ODg3NyAzLjU4ODc4IDAgOCAwQzEyLjQxMTIgMCAxNiAzLjU4ODc3IDE2IDcuOTk5OTdDMTYgMTIuNDExMiAxMi40MTEyIDE2IDggMTZaIiBmaWxsPSIjNTk1OTU5Ii8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNNy45OTk2OCAxMi45NTY2QzcuNjg3NDIgMTIuOTU2NiA3LjQyMzcgMTIuODI5MyA3LjQxMDA4IDEyLjY2NTVMNi45NDI0MSA3LjAzMzI0QzYuODk1NjUgNi40NzAyNCA3LjM2NzI2IDUuOTc1OTUgNy45OTk2OCA1Ljk3NTk1QzguNjMyMSA1Ljk3NTk1IDkuMTAzNzIgNi40NzAyNCA5LjA1Njk3IDcuMDMzMjRMOC41ODkyNiAxMi42NjU1QzguNTc1NjUgMTIuODI5MyA4LjMxMTk1IDEyLjk1NjYgNy45OTk2OCAxMi45NTY2WiIgZmlsbD0iIzU5NTk1OSIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTguOTExOTMgNC4xNzQ5N0M4LjkxMTkzIDQuNjc4NzQgOC41MDM1NCA1LjA4NzEgNy45OTk3OCA1LjA4NzFDNy40OTYwMSA1LjA4NzEgNy4wODc2NSA0LjY3ODc0IDcuMDg3NjUgNC4xNzQ5N0M3LjA4NzY1IDMuNjcxMiA3LjQ5NjAxIDMuMjYyODIgNy45OTk3OCAzLjI2MjgyQzguNTAzNTQgMy4yNjI4MiA4LjkxMTkzIDMuNjcxMiA4LjkxMTkzIDQuMTc0OTdaIiBmaWxsPSIjNTk1OTU5Ii8+Cjwvc3ZnPgo=" />
+              </picture>
+              <span class="port-tooltipTxt">
+                Switch your health insurance hassle-free while keeping your waiting period benefits intact.
+              </span>
+            </span>
+          </ng-container>
+          <ng-container *ngIf="(selectedpolicyType == 'elevate') || (selectedpolicyType == 'abc')">
+            <a class="link-btn port_link" (click)="openNriPopup()">
+              Get NRI health insurance at 25% off
+            </a>
+            <span href="javascript:void(0);" class="port-tooltip-icon">
+              <picture>
+                <source media="(max-width:767px)"
+                        srcset="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04LjAwMDAxIDEuMjczODJDNC4yOTExOSAxLjI3MzgyIDEuMjczODUgNC4yOTExOCAxLjI3Mzg1IDcuOTk5OTdDMS4yNzM4NSAxMS43MDg4IDQuMjkxMTkgMTQuNzI2MSA4LjAwMDAxIDE0LjcyNjFDMTEuNzA4OSAxNC43MjYxIDE0LjcyNjIgMTEuNzA4OCAxNC43MjYyIDcuOTk5OTdDMTQuNzI2MiA0LjI5MTE4IDExLjcwODkgMS4yNzM4MiA4LjAwMDAxIDEuMjczODJaTTggMTZDMy41ODg3OCAxNiAwIDEyLjQxMTIgMCA3Ljk5OTk3QzAgMy41ODg3NyAzLjU4ODc4IDAgOCAwQzEyLjQxMTIgMCAxNiAzLjU4ODc3IDE2IDcuOTk5OTdDMTYgMTIuNDExMiAxMi40MTEyIDE2IDggMTZaIiBmaWxsPSIjNTk1OTU5Ii8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNNy45OTk2OCAxMi45NTY2QzcuNjg3NDIgMTIuOTU2NiA3LjQyMzcgMTIuODI5MyA3LjQxMDA4IDEyLjY2NTVMNi45NDI0MSA3LjAzMzI0QzYuODk1NjUgNi40NzAyNCA3LjM2NzI2IDUuOTc1OTUgNy45OTk2OCA1Ljk3NTk1QzguNjMyMSA1Ljk3NTk1IDkuMTAzNzIgNi40NzAyNCA5LjA1Njk3IDcuMDMzMjRMOC41ODkyNiAxMi42NjU1QzguNTc1NjUgMTIuODI5MyA4LjMxMTk1IDEyLjk1NjYgNy45OTk2OCAxMi45NTY2WiIgZmlsbD0iIzU5NTk1OSIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTguOTExOTMgNC4xNzQ5N0M4LjkxMTkzIDQuNjc4NzQgOC41MDM1NCA1LjA4NzEgNy45OTk3OCA1LjA4NzFDNy40OTYwMSA1LjA4NzEgNy4wODc2NSA0LjY3ODc0IDcuMDg3NjUgNC4xNzQ5N0M3LjA4NzY1IDMuNjcxMiA3LjQ5NjAxIDMuMjYyODIgNy45OTk3OCAzLjI2MjgyQzguNTAzNTQgMy4yNjI4MiA4LjkxMTkzIDMuNjcxMiA4LjkxMTkzIDQuMTc0OTdaIiBmaWxsPSIjNTk1OTU5Ii8+Cjwvc3ZnPgo=" />
+
+                <img alt=""
+                     src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04LjAwMDAxIDEuMjczODJDNC4yOTExOSAxLjI3MzgyIDEuMjczODUgNC4yOTExOCAxLjI3Mzg1IDcuOTk5OTdDMS4yNzM4NSAxMS43MDg4IDQuMjkxMTkgMTQuNzI2MSA4LjAwMDAxIDE0LjcyNjFDMTEuNzA4OSAxNC43MjYxIDE0LjcyNjIgMTEuNzA4OCAxNC43MjYyIDcuOTk5OTdDMTQuNzI2MiA0LjI5MTE4IDExLjcwODkgMS4yNzM4MiA4LjAwMDAxIDEuMjczODJaTTggMTZDMy41ODg3OCAxNiAwIDEyLjQxMTIgMCA3Ljk5OTk3QzAgMy41ODg3NyAzLjU4ODc4IDAgOCAwQzEyLjQxMTIgMCAxNiAzLjU4ODc3IDE2IDcuOTk5OTdDMTYgMTIuNDExMiAxMi40MTEyIDE2IDggMTZaIiBmaWxsPSIjNTk1OTU5Ii8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNNy45OTk2OCAxMi45NTY2QzcuNjg3NDIgMTIuOTU2NiA3LjQyMzcgMTIuODI5MyA3LjQxMDA4IDEyLjY2NTVMNi45NDI0MSA3LjAzMzI0QzYuODk1NjUgNi40NzAyNCA3LjM2NzI2IDUuOTc1OTUgNy45OTk2OCA1Ljk3NTk1QzguNjMyMSA1Ljk3NTk1IDkuMTAzNzIgNi40NzAyNCA5LjA1Njk3IDcuMDMzMjRMOC41ODkyNiAxMi42NjU1QzguNTc1NjUgMTIuODI5MyA4LjMxMTk1IDEyLjk1NjYgNy45OTk2OCAxMi45NTY2WiIgZmlsbD0iIzU5NTk1OSIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTguOTExOTMgNC4xNzQ5N0M4LjkxMTkzIDQuNjc4NzQgOC41MDM1NCA1LjA4NzEgNy45OTk3OCA1LjA4NzFDNy40OTYwMSA1LjA4NzEgNy4wODc2NSA0LjY3ODc0IDcuMDg3NjUgNC4xNzQ5N0M3LjA4NzY1IDMuNjcxMiA3LjQ5NjAxIDMuMjYyODIgNy45OTk3OCAzLjI2MjgyQzguNTAzNTQgMy4yNjI4MiA4LjkxMTkzIDMuNjcxMiA4LjkxMTkzIDQuMTc0OTdaIiBmaWxsPSIjNTk1OTU5Ii8+Cjwvc3ZnPgo=" />
+              </picture>
+              <span class="port-tooltipTxt">
+                Get access to quality healthcare during visits to India with ICICI Lombard's health insurance.
+              </span>
+            </span>`
+          </ng-container>
+          <ng-container>
+            <a class="link-btn port_link" (click)="cancelManagePolicy('manage')">
+              Register a Claim
+            </a>
+          </ng-container>
+        </div>
+      </div>
+
+
+
+    </div>
+    <div class="form-group" *ngIf="selectedpolicyType == 'elevate' && IsCallCenterUser">
+      <input type="checkbox" id="port-policy-cc" [(ngModel)]="PortExistingPolicy" [checked]="PortExistingPolicy" (click)="portPolicy($event)">
+      <label for="port-policy-cc">I want to port my existing policy</label>
+    </div>
+
+    <div class="checkWrapper">
+      <div class="check-feild">
+        <input id="tc-mpblock" type="checkbox" [(ngModel)]="isIAgreeChecked" class="input-check maxp-terms">
+        <label for="tc-mpblock">
+          <span class="tncbasic">I agree to the <a href="/legal/privacy-policy" target="_blank" class="check-terms-condition">terms and conditions</a></span>
+        </label>
+        <span class="ui-error" *ngIf="!isIAgreeChecked">Please accept terms and conditions</span>
+      </div>
+
+      <div class="check-feild" id="mp-whatsApp">
+        <input id="mptc-WhatsApp" type="checkbox" class="input-check"
+               [checked]="isWhatsappOpted"
+               (click)="$event.preventDefault(); openWhatsappPopup()">
+        <label for="mptc-WhatsApp">
+          <span class="tncbasic" (click)="$event.preventDefault(); openWhatsappPopup()">
+            I want to receive updates on
+            <picture (click)="onWhatsappPictureClick($event)">
+              <source media="(max-width:767px)" srcset="/docs/default-source/assets/images/chifresh/bitmap_mob.svg">
+              <img class="lazy" src="/docs/default-source/assets/images/chifresh/bitmap.png?sfvrsn=2" alt="Receive updates on Whatsapp">
+            </picture>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <div class="checkWrapper managePrefWrapp">
+      <div class="check-feild managePref" id="Chi-whatsApp-Opt">
+        <label>
+          <span class="tncbasic">
+            To manage your WhatsApp preferences
+            <a id="health-preflink1" onclick="window.open('/manage-whatsapp-preference', '_blank', 'location=yes,scrollbars=yes,status=yes');">
+              click here
+            </a>
+          </span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Whatsapp Popup start-->
+<app-common-popup [(isWhatsappPop)]="isWhatsappPop"
+                  [(isWhatsappOpt)]="isWhatsappOpted">
+</app-common-popup>
+<!--Whatsapp Popup end -->
+<!--Port Popup start-->
+<app-port-existing-policy [isPortExisting]="showPortExistingPopup"
+                          [selectedpolicyType]="'ELEVATE'"
+                          (closed)="onPortPopupClosed()">
+</app-port-existing-policy>
+<!--Port Popup end-->
+<!-- NRI Popup start -->
+<app-nri-insurance-popup [showNriPopup]="showNriPopup"
+                         (closedNri)="onNriPopupClosed()">
+</app-nri-insurance-popup>
+<!-- NRI Popup end-->
+<!--<div id="widgetError" class="js-popup-wrap overlayN active" *ngIf="showPopup">
+  <div class="popup light js-popup-body">
+    <a href="javascript:void(0)" class="close" (click)="showPopup = false"></a>
+    <div class="content content-heightauto commonpop-pad">
+      <div id="errorPara">
+        <p>Please select atleast one member</p>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+<div class="lead_thanks_popupWrapper" *ngIf="activateBoosterThankyouPopup">
+  <div id="super-saver-pop" class="activeOverlay lead-overlay">
+    <div class="lead-popup-sec">
+      <div class="leadpopup-content">
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTcyIiBoZWlnaHQ9IjEwNiIgdmlld0JveD0iMCAwIDE3MiAxMDYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xOS43OTI1IDU4LjczOTNDMTkuNzk1OSA1OC43MTU1IDE5LjgwMjggNTguNjkxNiAxOS44MDYyIDU4LjY2NzhDMjAuMjM1MiA1Ni41OTA4IDE5LjM4MDYgNTQuNDQ1OCAxNy43MjI0IDUzLjQxNzVDMTEuMzk5NSA0OS41MDg3IDcuMTA5MzggNDEuOTMyOSA3LjEwOTM4IDMzLjIzVjMzLjAwNTNDNy4xMDkzOCAyMC4yOTgzIDE2LjI0NDcgOS45OTUxMiAyNy41MTgyIDkuOTk1MTJIMTI0LjYwOEMxMzIuODM0IDkuOTk1MTIgMTM5LjkyNyAxNS40ODM4IDE0My4xNTUgMjMuMzkzM0MxNDUuMTEyIDI4LjE5MDggMTQ4LjU3MiAzMS45OTA2IDE1Mi44MDQgMzQuMjYxN0MxNjMuNjI1IDQwLjA1MzQgMTcxLjEwNSA1Mi40ODggMTcxLjEwNSA2Ni44OTRWNjkuODg2OUMxNzEuMTA1IDg5LjgyOTIgMTU2Ljc2NyAxMDUuOTkyIDEzOS4wODIgMTA1Ljk5MkgxOS40NzI1QzguNzE2NDggMTA1Ljk4OSAwIDk2LjE1NTUgMCA4NC4wMzA3QzAgNzMuMDk3NyA3LjA4NTU1IDY0LjAzMzkgMTYuMzYzOCA2Mi4zNTUzQzE4LjA1NjEgNjIuMDQ4OSAxOS40MTQ2IDYwLjYxNTQgMTkuNzk5NCA1OC43MzI1TDE5Ljc5MjUgNTguNzM5M1oiIGZpbGw9IiNGRkYyRUIiLz4KPHBhdGggZD0iTTQuMTU1MjcgOTcuNjAwNkM3LjcyMDE4IDEwMi43MTEgMTMuMjU2NSAxMDUuOTk3IDE5LjQ3MDQgMTA2SDEzOS4wOEMxNDYuODk1IDEwNiAxNTQuMDUyIDEwMi44NDQgMTU5LjYxMiA5Ny42MDA2SDQuMTU1MjdaIiBmaWxsPSIjRkNEQUNFIi8+CjxwYXRoIGQ9Ik0xMjMuNjUyIDUyLjAzMzJMMTUwLjk1OSA1Ni41OTkxQzE1MC45NTkgNTYuNTk5MSAxNTguNDY3IDU3LjEyMzUgMTU3Ljc1MiA2My42NjQzTDE0OS40NTggOTcuNjM4MUgxMTYuOTIxTDEyMy42NTIgNTIuMDRWNTIuMDM2NlY1Mi4wMzMyWiIgZmlsbD0iIzExMjE0NyIvPgo8cGF0aCBkPSJNMTI0Ljg1NyA1Mi4xNjk0TDEzNC4yMzQgNTMuODAwNEwxMjkuNzAyIDc2Ljg1ODJDMTI4Ljc1MiA4MS42OTMxIDEyOC4zODEgODYuNjIzMyAxMjguNTk1IDkxLjU0MzRMMTI4Ljg2MSA5Ny41OTczSDExNC43MjRMMTI0Ljg2IDUyLjE2NkgxMjQuODU3VjUyLjE2OTRaIiBmaWxsPSIjMDkwRjE0Ii8+CjxwYXRoIGQ9Ik04Ni45NzI2IDI2Ljk3NzVDODYuOTcyNiAyNi45Nzc1IDg2Ljc3MTcgMzMuNDUzNiA4NS4yOTA1IDM3LjAyMTlDODMuODA5NCA0MC41OTAyIDgxLjg1ODQgNDQuMjg3OSA4NC40MTU1IDQ3LjU4NzJMMTAwLjk3MyA0MC40MzAyTDg2Ljk3NiAyNi45Nzc1SDg2Ljk3MjZaIiBmaWxsPSIjMDUxODMwIi8+CjxwYXRoIGQ9Ik01OC4yOTg2IDg0LjEzNTJMNTUuODQzNyA4NS4zNzhMNTIuMTUyOCA4Ny42Mzg5QzUxLjE5OTQgODguMjIxMSA1MC40MTYzIDg5LjA0MTcgNDkuODc0OSA5MC4wMTg5TDQ3LjI3MzYgOTQuNzIxQzQ3LjE0NDIgOTQuOTUyNSA0Ny4yMzYxIDk1LjI0ODggNDcuNDc0NSA5NS4zNjQ1QzQ3Ljg1NTggOTUuNTUxOCA0OC40MDQgOTUuNjc3OCA0OC43NjE1IDk1LjEwMjNMNDkuODg4NSA5My42ODkzTDQ5LjkzOTYgOTUuNjAyOUM0OS45NDY0IDk1LjkyNjMgNTAuMjY2NSA5Ni4xNTEgNTAuNTcyOSA5Ni4wNDg5QzUxLjAwODcgOTUuOTAyNSA1MS41NDMzIDk1LjQ5MDUgNTEuNzY4IDk0LjM2MzVMNTEuOTExIDk1Ljk1N0M1MS45NTE5IDk2LjM4NiA1Mi4zNzQxIDk2LjY3ODggNTIuNzkyOSA5Ni41NTI4QzUzLjE2NCA5Ni40NDA1IDUzLjU2OTIgOTYuMTY0NyA1My43ODcxIDk1LjUwNzVDNTQuMjU3IDk0LjA5NDUgNTQuNzMwMyA5MS44NzQ1IDU0LjczMDMgOTEuODc0NUw1NS44NDAzIDkwLjg0NjNMNTQuOTMxMiA5My41NTY1TDU0LjY3OTIgOTYuOTAwMUM1NC42NDg2IDk3LjM0OTYgNTUuMDQ2OSA5Ny43MTczIDU1LjQ4OTYgOTcuNjI4OEM1NS45NTYgOTcuNTM2OCA1Ni40NzcgOTcuMjYxIDU2LjY3NzkgOTYuNTE4OEM1Ni45MjMgOTUuNjA5NyA1Ny42MDQgOTQuMjcxNiA1OC4wOTA5IDkzLjM3MjdDNTguNDEwOSA5Mi43ODAyIDU5LjAzMDYgOTIuNDEyNSA1OS43MDE0IDkyLjQxMjVINjAuNTExN0M2MC41MTE3IDkyLjQxMjUgNTkuOTA5MSA5Mi43NjY2IDU5LjYwNjEgOTMuNTI1OUM1OS4zODEzIDk0LjA5MTEgNTkuNjEyOSA5NC43MzQ2IDYwLjEzMzggOTUuMDQ0NUM2MC44MjE2IDk1LjQ1MyA2MS45MDc3IDk1LjkzNjUgNjIuODY0NSA5NS42NDM3QzYyLjg2NDUgOTUuNjQzNyA2NC42MTQ2IDk1LjEwNTcgNjQuMDA4NiA5Mi4yMTE2TDY0LjYxOCA4OC4wNDA2TDU4LjI5NTIgODQuMTM4NlY4NC4xMzE4SDU4LjI4ODRMNTguMjk4NiA4NC4xMzUyWiIgZmlsbD0iI0Y5QjY5NCIvPgo8cGF0aCBkPSJNMTAyLjgxNyAzOS4xNDIxTDkwLjM2NDkgNDEuOTcxNUM5MC4zNjQ5IDQxLjk3MTUgODQuMTA2NyA0Mi43Nzg1IDgwLjczOTMgNDkuMzA5TDY4LjAwODUgNjguNTA5MUM2Ni4xNDk0IDcxLjMxNDcgNjYuNzQxOSA3NS4wNzcxIDY5LjM3NzIgNzcuMTcxMUM3Mi4yMTY5IDc5LjQyODUgNzYuMzUzOCA3OC45MTc4IDc4LjU2MDIgNzYuMDQwN0w4MC41MzUgNzMuNDY2NkM4MC41MzUgNzMuNDY2NiA4MC45NDAyIDc3LjcwNTcgODMuNzY2MyA4MC4zOTg5TDg0Ljk3ODQgOTcuNjI3NkgxMjEuNjU5Vjc5Ljg2MUMxMjEuNjU5IDc5Ljg2MSAxMjcuMDQyIDY0LjA0MTkgMTI4LjI1OCA1Mi42NjI4QzEyOC4yNTggNTIuNjYyOCAxMjguMzUgNDguNzM3IDEyNC42ODMgNDUuODcwMUMxMjMuNTkzIDQ1LjAxNTUgMTIyLjMzIDQ0LjQwNiAxMjAuOTk1IDQ0LjA0NTFMMTAyLjgxNyAzOS4xMzE4SDEwMi44MlYzOS4xMzg2TDEwMi44MTcgMzkuMTQyMVoiIGZpbGw9IiNFOTY1MjYiLz4KPHBhdGggZD0iTTcyLjczNTMgNjkuNjk1MUw2OC4wMTYyIDY4LjVDNjguMDE2MiA2OC41IDU5Ljc0NTcgNzQuNTM2OCA1NS44NDM4IDg1LjM3NDZDNTUuODQzOCA4NS4zNzQ2IDYwLjIxNTYgODUuMDMwNyA2NC4yODc4IDkwLjM1MjVMNzUuNzI4MiA3OC4xNDk0TDcyLjczNTMgNjkuNjkxN1Y2OS42OTUxWiIgZmlsbD0iI0U5NjUyNiIvPgo8cGF0aCBkPSJNOTEuMzc4OSAyNi4wMTQxTDkyLjg2IDQzLjc4NDFMOTIuMjI2NyA1NC42MzIxQzkyLjE1NTIgNTUuODMwNiA5Mi4xOTYxIDU3LjAzNTkgOTIuMzQ5MyA1OC4yMzQ0TDkyLjg2MzQgNjIuMzEwMUw5NC43MDIxIDU2LjQwOTRDOTUuMjE5NiA1NC43Mzc2IDk1Ljk3ODkgNTMuMTUxIDk2Ljk1MjcgNTEuNjkzN0wxMDEuNDEgNDUuMDAzMUwxMDkuNzgyIDM5LjE1MDFMMTEwLjU2MiAxNy43NDcxTDkxLjM3ODkgMjYuMDI3N1YyNi4wMjA5VjI2LjAxNDFaIiBmaWxsPSIjRjlCNjk0Ii8+CjxwYXRoIGQ9Ik0xMDUuMzEyIDMyLjU5TDEwOC4xNTEgMTguNzc2NEw5MS4zNzg5IDI2LjAxNTFMOTIuODYgNDMuNzg1Mkw5Mi41MTYxIDQ5LjY3OUw5OC4wMjg2IDQ0Ljk1MzFDMTAxLjc2IDQxLjc1MjUgMTA0LjMyNCAzNy40MDQ0IDEwNS4zMTUgMzIuNTlIMTA1LjMxMloiIGZpbGw9IiNFMzdGNjMiLz4KPHBhdGggZD0iTTgzLjgxMSAxNi40MjkyQzgzLjgxMSAxNi40MjkyIDgyLjQ5IDE4LjAyMjcgODIuMjQ0OCAxOS4yMTFDODEuOTk5NyAyMC4zOTkzIDgzLjAyNzkgMjcuNjE0MiA4My4wMjc5IDI3LjYxNDJDODMuMDI3OSAyNy42MTQyIDg0LjQxMDMgMzEuNzU0NSA4Ny43MTMgMzEuNDk1OEw4Ni42NDM5IDE3LjM2ODlMODMuODE0NCAxNi40MjU4TDgzLjgxMSAxNi40MjkyWiIgZmlsbD0iI0ZGRjBFOSIvPgo8cGF0aCBkPSJNODcuMzAwMyAxMC4wMjI3Qzg3LjI3MzEgMTAuMDQ2NiA4Ny4yNTI2IDEwLjA3MDQgODcuMjI4OCAxMC4wOTQyQzg1LjY3MjggMTEuNjI2NCA4NC44NzI2IDEzLjc2ODEgODUuMDE5IDE1Ljk0NzJMODYuMDk1IDMxLjc1NjFDODYuMjA3MyAzMy4zNjY2IDg2LjgwMzIgMzQuOTAyMiA4Ny44MTEgMzYuMTY4OEw4OC4zNTI0IDM2Ljg0OThDODkuMzUgMzguMTAyNyA5MC43NTYyIDM4Ljk2NDIgOTIuMzI5MyAzOS4yODQyTDkzLjkxNiAzOS42MDc3Qzk1LjI0MzkgMzkuODgwMSA5Ni42MjYzIDM5Ljc0NzMgOTcuODgyNyAzOS4yMzMyTDEwMi40MjEgMzcuMzY3M0MxMDUuOTAxIDM1LjkzMzggMTA4LjMwNSAzMi43MDI2IDEwOC42NzYgMjguOTY0MUwxMDkuNjQzIDE5LjIxOTNDMTA5LjY0MyAxOS4yMTkzIDEwNS42NjMgNy41NDA1NyA5Mi4zNzAyIDcuOTI1MzJDOTAuNDczNiA3Ljk3OTggODguNjU4OCA4LjcyMjA2IDg3LjI5MzUgMTAuMDM5N0w4Ny4zMDAzIDEwLjAzMjlWMTAuMDIyN1oiIGZpbGw9IiNGOUI2OTQiLz4KPHBhdGggZD0iTTEwNi40ODIgMjEuNzcyNUwxMDQuMzEzIDI3LjYwODRDMTA0LjMxMyAyNy42MDg0IDEwMS45MDYgMzMuNjE0NiAxMDQuMTQ3IDM2LjQ0NDFMMTA5LjY0NiAzMy4wNDZMMTA2LjQ3OSAyMS43NzI1SDEwNi40ODJaIiBmaWxsPSIjRTM3RjYzIi8+CjxwYXRoIGQ9Ik05NS4wOTY5IDM3Ljk1NDlMOTUuMDE4NiAzNy4yNTY5TDk4LjcwNiAzNi44NTE4QzEwMC4wMTQgMzYuNzA4NyAxMDEuMjMyIDM2LjE4NDQgMTAyLjIzNyAzNS4zNDM0TDEwNy45NDMgMzAuNTUyN0wxMDguMzkzIDMxLjA5MDdMMTAyLjY4NiAzNS44ODE0QzEwMS41NzYgMzYuODE3NyAxMDAuMjI1IDM3LjM4OTcgOTguNzgwOSAzNy41NDk3TDk1LjA5MzUgMzcuOTU0OUg5NS4wOTY5WiIgZmlsbD0iI0ZGRjFFQSIvPgo8cGF0aCBkPSJNOTQuNzM3NCAzOC41MUM5NS43MTE0IDM4LjUxIDk2LjUwMTEgMzguMTI1OSA5Ni41MDExIDM3LjY1MkM5Ni41MDExIDM3LjE3ODEgOTUuNzExNCAzNi43OTM5IDk0LjczNzQgMzYuNzkzOUM5My43NjMzIDM2Ljc5MzkgOTIuOTczNiAzNy4xNzgxIDkyLjk3MzYgMzcuNjUyQzkyLjk3MzYgMzguMTI1OSA5My43NjMzIDM4LjUxIDk0LjczNzQgMzguNTFaIiBmaWxsPSIjRkZGMEU5Ii8+CjxwYXRoIGQ9Ik05Mi4zNTIgOS44OTYzMkM5Mi4zNTIgOS44OTYzMiAxMDEuNDkxIDEzLjgxNTMgMTAzLjI4NSAxNi4zOTk2QzEwNS4wNzkgMTguOTgwNSAxMDYuMDA2IDIwLjcgMTA2LjA0NiAyMi4zMzA5TDEwNy4wOTUgMzMuMDQ5NVY0MC4yOTVMMTIyLjE1OCA0NC40Mzg4QzEyMi4xNTggNDQuNDM4OCAxMTguOTQ0IDQwLjI1NDIgMTE4LjA2OSAzNS4yMDQ4QzExNy4xOTQgMzAuMTU1MyAxMTIuMzg2IDEyLjM5ODkgMTEyLjM4NiAxMi4zOTg5QzExMi4zODYgMTIuMzk4OSAxMTIuMDggNC45ODMwOSAxMDQuMTQgMi4yMjE3NEM5Ni4xOTYxIC0wLjUzOTYxOCA5NC4yMDA4IDEuNDgyODggOTQuMjAwOCAxLjQ4Mjg4Qzk0LjIwMDggMS40ODI4OCA4OS4wMTUyIDEuMzY3MTEgODYuMzE1MSA1LjA2MTRDODMuNjE1MSA4Ljc1MjI4IDgxLjg3MTggMTQuNTg0OCA4My4xMTQ1IDE2Ljk1MTJDODQuMzUzOSAxOS4zMTc2IDg1LjQwOTQgMjEuNDg2NSA4NS40MDk0IDIxLjQ4NjVMODUuMTY0MyAxNy44NTY5Qzg1LjA2MjEgMTYuMzMxNSA4NS40ODA5IDE0LjgwOTYgODYuMzU5NCAxMy41NTMyQzg3LjU0MDkgMTEuODYwOSA4OS41MjU5IDkuODkyOTIgOTIuMzY5IDkuODkyOTJIOTIuMzYyMkw5Mi4zNTIgOS44OTYzMloiIGZpbGw9IiMwNTE4MzAiLz4KPHBhdGggZD0iTTEwOS42NSAxNy4zNjU3TDEwOC4xMDEgMTcuNDFDMTA4LjEwMSAxNy40MSAxMDYuNjc0IDE3Ljk3NTIgMTA2LjQ3NyAxOS4zNTA4QzEwNi4yNzkgMjAuNzI2MyAxMDUuMzA5IDI4LjA1MzYgMTA1LjMwOSAyOC4wNTM2QzEwNS4zMDkgMjguMDUzNiAxMDUuMjEgMzIuNjcwNiAxMTAuMTIgMzIuNDg2OEwxMDkuNjUgMTcuMzYyM1YxNy4zNjU3WiIgZmlsbD0iI0Y4RDBCRCIvPgo8cGF0aCBkPSJNMTEwLjU1NyAxNS44MzI1QzExMC41NTcgMTUuODMyNSAxMDkuMDE4IDE2LjMxNiAxMDguMDk1IDE3LjQwOUMxMDcuNzM4IDE3LjgzNDYgMTA3LjUyMyAxOC4zNTU1IDEwNy40NjIgMTguOTAwM0wxMDYuNTE2IDI3LjE4NDRDMTA2LjUxNiAyNy4xODQ0IDEwNi4wMTIgMzAuMzkxOCAxMDguNTM4IDMyLjE1NTVDMTA4LjUzOCAzMi4xNTU1IDExMC45MDQgMzMuMDk1MiAxMTEuOTU3IDMxLjQ4ODFDMTEyLjg2NiAzMC4xMDU4IDExMy4zNjYgMjEuNDU0IDExMy40ODkgMTkuMTAxMkMxMTMuNTI2IDE4LjM1ODkgMTEzLjMyOSAxNy42MTY3IDExMi44OTYgMTcuMDEwNkMxMTIuNDYgMTYuNDAxMSAxMTEuNzQyIDE1LjgzNTkgMTEwLjU1NCAxNS44MjkxTDExMC41NTcgMTUuODMyNVoiIGZpbGw9IiNGRkYwRTkiLz4KPHBhdGggZD0iTTEwNy4wOTUgMzMuMDQ2NEwxMDYuMTY5IDM3LjQzMTlDMTA1Ljk5OSAzOC4yMzU0IDEwNS42ODkgMzkuMDA0OSAxMDUuMjUzIDM5LjY5OTVDMTA0LjQ3NyA0MC45NDIzIDEwMy4yNTggNDMuMjQwNiAxMDMuMjg5IDQ1LjQwOTVDMTAzLjI4OSA0NS40MDk1IDExMi41NTMgMzguNjk4NSAxMTIuNjE4IDM4LjU2MjNDMTEyLjY4MyAzOC40MjYxIDEwNy4wOTkgMzMuMDQzIDEwNy4wOTkgMzMuMDQzTDEwNy4wOTUgMzMuMDQ2NFoiIGZpbGw9IiNFMzdGNjMiLz4KPHBhdGggZD0iTTEwOS42NDYgNjIuMzAzNkwxMDEuNzQzIDY0LjI0NzhMMTAyLjU1IDQ4LjgzNzNDMTAyLjU1IDQ4LjgzNzMgMTAyLjQ4MiA0NC43OTkxIDEwNS4xNzUgNDMuMjUzM0wxMDguNzQ0IDM3LjY2OTNMMTA3LjYgMzQuNzEwNUMxMDcuNiAzNC43MTA1IDEwNi4zMjMgMzYuMTkxNiAxMDUuMzA4IDM0LjkxMTRDMTA1LjMwOCAzNC45MTE0IDEwNC41MjggMzUuMTkwNiAxMDQuMDY5IDM0LjY3M0MxMDMuODkyIDM0LjQ3NTUgMTAzLjkzMiAzNC4xNjkxIDEwNC4xNCAzNC4wMDkxTDEwNy4zMjcgMzEuNjE1NUwxMDYuMTc2IDMxLjIwMDFDMTA1Ljc1MSAzMS4wNDM0IDEwNS40MTQgMzAuNzA5OCAxMDUuMjY0IDMwLjI4NzVDMTA1LjI2NCAzMC4yODA3IDEwNS4yNiAzMC4yNzM5IDEwNS4yNTcgMzAuMjYzN0MxMDUuMDc3IDI5Ljc0NjIgMTA1LjU0IDI5LjIyODYgMTA2LjA3OCAyOS4zMzc2TDEwOS4wNzQgMjkuOTM2OEMxMDkuMDc0IDI5LjkzNjggMTA4LjY0OCAyOS4zMTM4IDEwOC41NDYgMjguNjYzNEMxMDguNDc1IDI4LjE5MzYgMTA5LjAzNiAyNy44ODcxIDEwOS4zOTcgMjguMjAzOEMxMTAuMzUxIDI5LjA0NDggMTEyLjEyMSAzMC41OTA2IDExMi4xNzIgMzAuNTM5NUMxMTIuMjQgMzAuNDcxNCAxMTUuNTM2IDM2LjkzMzkgMTE1LjUzNiAzNi45MzM5QzExNS41MzYgMzYuOTMzOSAxMTYuOTE5IDM5Ljg2MjEgMTE1Ljk3NiA0MS4xNDIzQzExNS4wMzIgNDIuNDE5MSAxMDkuNTEzIDQ4LjYxMjYgMTA5LjUxMyA0OC42MTI2TDEwOS42NDIgNjIuMzIwNlY2Mi4zMDdIMTA5LjY0NlY2Mi4zMDM2WiIgZmlsbD0iI0Y5QjY5NCIvPgo8cGF0aCBkPSJNOTkuNzY1NiA2NS4wMTc0TDEwOS42NDcgNjIuMzAzN0MxMDkuNjQ3IDYyLjMwMzcgMTAyLjEyOSA2My4yNjA1IDk5Ljc2NTYgNjUuMDE3NFoiIGZpbGw9IiNERDQ3MjYiLz4KPHBhdGggZD0iTTExMC4xMjcgNjIuOTk5M0wxMTAuOTk5IDY5LjE5MjhMMTE2LjkyMyA1My4wNEwxMTAuMTI3IDYyLjk5OTNaIiBmaWxsPSIjREQ0NzI2Ii8+CjxwYXRoIGQ9Ik0xMTEuMDY1IDY5LjcyOTVMMTEyLjc0NyA3OS40MTk4QzExMi43NDcgNzkuNDE5OCAxMTIuNTQ3IDcyLjQ4NzQgMTExLjA2NSA2OS43Mjk1WiIgZmlsbD0iI0RENDcyNiIvPgo8cGF0aCBkPSJNMTEyLjU0OCA3Mi45NjE5QzExMi41NDggNzIuOTYxOSAxMTQuNDMxIDc1LjUyMjQgMTE0LjAyOSA3Ny4wNjQ4TDExMi41NDggNzIuOTYxOVoiIGZpbGw9IiNERDQ3MjYiLz4KPHBhdGggZD0iTTk5Ljc2NTYgNzkuNDMwN0wxMDEuNDEgODguODE0NUMxMDEuODE5IDkxLjEzMzIgMTAzLjQwNSA5My4wOTc4IDEwNS42MTkgOTMuOTA4MkMxMDUuNjcgOTMuOTI1MiAxMDUuNzIxIDkzLjk0NTcgMTA1Ljc3NSA5My45NjI3QzEwNy41MzIgOTQuNTU1MSAxMDkuNDY2IDk0LjI0MTkgMTEwLjk4NSA5My4xNzYyQzExMy41MjggOTEuMzgxOCAxMTkuMDUxIDg2Ljg2MzUgMTIxLjY2OSA3OS44Njk5Vjk3LjYzNjVIMTAyLjcxMUMxMDIuNzExIDk3LjYzNjUgOTkuNzcyNCA4Ni41MTI4IDk5Ljc2NTYgNzkuNDM3NVY3OS40MzQxVjc5LjQzMDdaIiBmaWxsPSIjREQ0NzI2Ii8+CjxwYXRoIGQ9Ik04NS4wMDE2IDYzLjM3MjFDODUuMDAxNiA2My4zNzIxIDgwLjIzODIgNjguNzkyNiA4MC41NDEyIDczLjQ2NzVDODAuNTcxOCA3My40OTgyIDc4LjU2NjQgNzYuMDQxNiA3OC41NjY0IDc2LjA0MTZDNzguNTY2NCA3Ni4wNDE2IDc4LjE4NSA2OC4zODc1IDg1LjAwMTYgNjMuMzcyMVoiIGZpbGw9IiNERDQ3MjYiLz4KPHBhdGggZD0iTTY3LjYxMjMgNzIuMzczQzY3LjYxMjMgNzIuMzczIDcxLjMxIDczLjcwMSA3MS41Njg4IDc3LjA2ODRMNjcuNjEyMyA3Mi4zNzNaIiBmaWxsPSIjREQ0NzI2Ii8+CjxwYXRoIGQ9Ik02OC4zMjQyIDcxLjYxNjJDNjguMzI0MiA3MS42MTYyIDY5Ljk0MTUgNzEuMjExIDcxLjIxODQgNzMuMjMzNUw2OC4zMjQyIDcxLjYxNjJaIiBmaWxsPSIjREQ0NzI2Ii8+CjxwYXRoIGQ9Ik05MC4wNDIxIDc3LjA2NzRDOTAuMDQyMSA3Ny4wNjc0IDkxLjI3ODEgODEuNTEwNyA5Ni41Mjg0IDgyLjM4MjRDOTYuNTI4NCA4Mi4zODI0IDkwLjAxMTUgODIuNjUxNCA5MC4wNDIxIDc3LjA2NzRaIiBmaWxsPSIjREQ0NzI2Ii8+CjxwYXRoIGQ9Ik04Ni45Njg4IDUwLjg4ODdDODYuOTY4OCA1MC44ODg3IDg5LjA2NjEgNTAuODg4NyA5MC4wMzk5IDUyLjMwMTdDOTEuMDEwMyA1My43MTQ3IDkxLjc0OTIgNTcuMTQ2OCA5MS43NDkyIDU3LjE0NjhMOTIuODU5MiA2Mi4zMDUyTDg2Ljk2ODggNTAuODg4N1oiIGZpbGw9IiNERDQ3MjYiLz4KPHBhdGggZD0iTTk0LjE5MTQgNTguMDI0Mkw5OS43NjE4IDUwLjQzMTRDOTkuNzYxOCA1MC40MzE0IDEwMS4wMzUgNDkuMzc5MyAxMDEuNzQzIDUwLjA5NzdMMTAwLjM2MSA0OC4zMjcxQzEwMC4zNjEgNDguMzI3MSA5NS43NjExIDUxLjkwMjMgOTQuMTkxNCA1OC4wMjQyWiIgZmlsbD0iI0RENDcyNiIvPgo8cGF0aCBkPSJNOTEuMDk2NyAyOC4zMDU2QzkxLjA5NjcgMjcuNjUxOCA5MS41MDE5IDI3LjA5MzQgOTIuMDczOSAyNi44NjUzQzkxLjg5NjggMjYuNzkzOCA5MS43MDI4IDI2Ljc1MjkgOTEuNTAxOSAyNi43NTI5QzkwLjY0NzIgMjYuNzUyOSA4OS45NTYxIDI3LjQ0NDEgODkuOTU2MSAyOC4yOTg3Qzg5Ljk1NjEgMjkuMTUzNCA5MC42NDcyIDI5Ljg0NDYgOTEuNTAxOSAyOS44NDQ2QzkxLjcwMjggMjkuODQ0NiA5MS44OTY4IDI5LjgwMzcgOTIuMDczOSAyOS43MzIyQzkxLjUwMTkgMjkuNTA0MSA5MS4wOTY3IDI4Ljk0OTEgOTEuMDk2NyAyOC4yOTE5VjI4LjI5ODdWMjguMzA1NloiIGZpbGw9IiNFMzdGNjMiLz4KPHBhdGggZD0iTTk1LjcyMzEgMjQuMDYzNUM5Ni4wNzY3IDI0LjA2MzUgOTYuMzYzMiAyMy41NTEzIDk2LjM2MzIgMjIuOTE5NEM5Ni4zNjMyIDIyLjI4NzYgOTYuMDc2NyAyMS43NzU0IDk1LjcyMzEgMjEuNzc1NEM5NS4zNjk2IDIxLjc3NTQgOTUuMDgzIDIyLjI4NzYgOTUuMDgzIDIyLjkxOTRDOTUuMDgzIDIzLjU1MTMgOTUuMzY5NiAyNC4wNjM1IDk1LjcyMzEgMjQuMDYzNVoiIGZpbGw9IiMwNTE4MzAiLz4KPHBhdGggZD0iTTg4LjI0NTYgMjQuNjAzNUM4OC41OTkxIDI0LjYwMzUgODguODg1NyAyNC4wOTEzIDg4Ljg4NTcgMjMuNDU5NUM4OC44ODU3IDIyLjgyNzYgODguNTk5MSAyMi4zMTU0IDg4LjI0NTYgMjIuMzE1NEM4Ny44OTIxIDIyLjMxNTQgODcuNjA1NSAyMi44Mjc2IDg3LjYwNTUgMjMuNDU5NUM4Ny42MDU1IDI0LjA5MTMgODcuODkyMSAyNC42MDM1IDg4LjI0NTYgMjQuNjAzNVoiIGZpbGw9IiMwNTE4MzAiLz4KPHBhdGggZD0iTTg5Ljg4MDkgMzIuMzcxN0w5NS44MTkgMzEuNjM5NkM5NS44MTkgMzEuNjM5NiA5NC40NzA2IDM1LjU5NjEgODkuODgwOSAzMi4zNzE3WiIgZmlsbD0iI0ZGRjBFOSIvPgo8cGF0aCBkPSJNMjIuODI3MSA5Ny42MDA2SDcwLjU0NjVDNzEuODA5NyA5Ny42MDA2IDcyLjgzOCA5OC42Mjg5IDcyLjgzOCA5OS44OTIxSDIwLjUzOTFDMjAuNTM5MSA5OC42Mjg5IDIxLjU2NzMgOTcuNjAwNiAyMi44MzA1IDk3LjYwMDZIMjIuODI3MVoiIGZpbGw9IiMwNTE4MzAiLz4KPHBhdGggZD0iTTEzLjQ3NCA3NC41Nzc2SDQ0LjEyODFDNDQuOTAxIDc0LjU3NzYgNDUuNTc1MiA3NS4xMDU0IDQ1Ljc1OSA3NS44NTFMNTEuNzY4NiA5OS44ODI3SDE3LjY0NUwxMS44NDMxIDc2LjY2NDhDMTEuNTc3NSA3NS42MDU5IDEyLjM4MSA3NC41NzQyIDEzLjQ3NCA3NC41NzQyVjc0LjU3NzZaIiBmaWxsPSIjMTEyMTQ3Ii8+CjxwYXRoIGQ9Ik05NC4xOTE0IDEuNDgzMjFDOTQuMTkxNCAxLjQ4MzIxIDEwMy4xMjIgMC40NzUzNjkgMTA2Ljk2IDYuMjYzNjZDMTEwLjc5NyAxMi4wNTE5IDExMC4xMjMgMTYuNjg5NCAxMTAuMTIzIDE2LjY4OTRMMTExLjg0NiAxNi45NTVDMTExLjg0NiAxNi45NTUgMTEyLjkxNSAxMC4zMDE4IDEwOC41NTcgNC43ODI1NEMxMDQuMTk4IC0wLjczNjc2OSA5NS42OTMgLTAuMzMxNTg5IDk0LjE5MTQgMS40ODY2MlYxLjQ4MzIxWiIgZmlsbD0iI0ZGRjBFOSIvPgo8cGF0aCBkPSJNOTQuNDQ5IDE5LjgzNDlDOTQuNDQ5IDE5LjgzNDkgOTUuOTk4MiAxOS4xMzY5IDk3LjczODEgMjAuNTg3NEw5Ni42MTExIDIwLjMwODJDOTYuMTAzOCAyMC4xODIyIDk1LjU3MjYgMjAuMTY4NiA5NS4wNTg1IDIwLjI2MzlMOTQuMTM1NyAyMC40Mzc1TDk0LjQ1MjQgMTkuODQxN0g5NC40NDlWMTkuODM4M1YxOS44MzQ5WiIgZmlsbD0iIzA1MTgzMCIvPgo8cGF0aCBkPSJNODkuMTIxOCAyMC4wNTk1Qzg5LjEyMTggMjAuMDU5NSA4Ny40ODA2IDE5LjYzMDUgODYuMDAyOSAyMS4zNDMyTDg3LjA3MjEgMjAuODgwMUM4Ny41NTU2IDIwLjY2OSA4OC4wNzMxIDIwLjU2NjggODguNTk3NCAyMC41ODA1TDg5LjUzMzggMjAuNTk3NUw4OS4xMjE4IDIwLjA1OTVaIiBmaWxsPSIjMDUxODMwIi8+CjxwYXRoIGQ9Ik01NS44MzY5IDkwLjg0MjdMNTYuODI0MyA4OC41MjczQzU2LjgyNDMgODguNTI3MyA1NS44MzY5IDg5LjU3OTQgNTUuODM2OSA5MC44NDI3WiIgZmlsbD0iI0UzN0Y2MyIvPgo8cGF0aCBkPSJNNTEuNzY5NSA5NC4zNjZMNTIuMDY5MiA5MC44ODk2QzUyLjA2OTIgOTAuODg5NiA1MS4zOTUgOTIuMzgxIDUxLjc2OTUgOTQuMzY2WiIgZmlsbD0iI0UzN0Y2MyIvPgo8cGF0aCBkPSJNNjAuNTE1NiA5Mi40MTM2QzYwLjUxNTYgOTIuNDEzNiA2Mi41MDA3IDkyLjc4NDggNjIuOTA1OCA5My4xMjE4QzYyLjkwNTggOTMuMTIxOCA2MS43NjE4IDkxLjkwOTcgNjAuNTE1NiA5Mi40MTM2WiIgZmlsbD0iI0UzN0Y2MyIvPgo8cGF0aCBkPSJNODMuMTc2MiAxMDQuOTI2SDU5LjQwMzNMODMuODU3MSA5OS44ODM4SDEwNS45ODVMODMuMTc2MiAxMDQuOTI2WiIgZmlsbD0iI0ZGRjFFQSIvPgo8cGF0aCBkPSJNODIuNjQyOSAxMDQuNTY1TDEwMy44MTggOTkuODgzOEg4My44NDgyTDYxLjE0NDUgMTA0LjU2NUg4Mi42NDI5WiIgZmlsbD0iI0ZDREFDRSIvPgo8cGF0aCBkPSJNODIuMjYzNSAxMDQuMzg1SDU4LjQ4NzNMODIuOTQxMSA5OS4zNDI4SDEwNS4wNzNMODIuMjYzNSAxMDQuMzg1WiIgZmlsbD0iI0ZGRjFFQSIvPgo8L3N2Zz4K">
+        <h2 class="lead_thanks_register">Thank you for sharing the details</h2>
+        <p class="lead_get_back">Our customer care executive will call you shortly to help complete your journey.</p>
+        <div class="lead-thanks-ok-btn"><a href="javascript:void(0);" id="thanks_ok" class="primary-btn" (click)="activateBoosterThankyouPopup=false;gaEvent('got_it_click');">Got it</a></div>
+      </div>
+    </div>
+  </div>
+</div>
