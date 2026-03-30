@@ -1,0 +1,242 @@
+<div class="maxp-form-block detailsWrapp {{selectedpolicyType}}Class">
+  <form [formGroup]="myForm" (keydown.enter)="handleEnterKey($event)">
+    <div class="maxpadultWrapp marRight" [ngClass]="(numberofAdults!=0 && ismemberDetailsPopup)?'active_shadow':''">
+      <div class="row adultOuter" *ngIf="selectedpolicyType !== 'pp'">
+        <div class="adult-count">
+          <div class="input-block steps-row">
+            <span class="AdultB">Adult(s) </span>
+            <br class="lg-none">
+            <span class="sm_f"> {{selectedpolicyType == 'hap' ? '' : (selectedpolicyType == 'elevate' || selectedpolicyType == 'abc' || selectedpolicyType == 'ab') ? '(18 years & above)' : (selectedpolicyType == 'hb') ? '(21 years & above)' : '(21 years to 65 years)'}} </span>
+
+          </div>
+          <div class="subs-block">
+            <button class="min-num js-maxpsubsadult"
+                    [ngClass]="{'btn-disable':numberofAdults==0}"
+                    *ngIf="!isAdultDobVaildated"
+                    (click)="updateAdultCount(-1)">
+              -
+            </button>
+            <input type="text"
+                   class="adult-textbox"
+                   name="adultNumber"
+                   id="adultNo"
+                   maxlength="1"
+                   formControlName="txtNumberofadults"
+                   value="0"
+                   placeholder="0"
+                   [disabled]="true">
+            <button class="plus-num js-maxpaddsadult"
+                    [ngClass]="{'btn-disable': selectedpolicyType == 'hap' ? numberofAdults==6 : numberofAdults==2}"
+                    *ngIf="!isAdultDobVaildated" (click)="updateAdultCount(1)">
+              +
+            </button>
+            <a *ngIf="isAdultDobVaildated" class="maxpeditBtn" (click)="showInsuredMemberDetailsPopup()">Edit</a>
+          </div>
+        </div>
+        <div class="adultBoxWrapp" *ngIf="numberofAdults!=0 && ismemberDetailsPopup">
+
+          <ng-container *ngFor="let adult of adults; let i = index">
+            <div class="dob-form-block-new" *ngIf="numberofAdults >= (i + 1)">
+              <div class="input-block-new date-block-new">
+                <label for="ui-dob">Adult {{ i + 1 }} date of birth</label>
+                <input type="tel" [id]="'valid-adult' + (i + 1) + 'date'" maxlength="2"
+                       (focusout)="appendZeroDOB('txtadult' + (i + 1) + 'date'); removeFocus($event)"
+                       #dd
+                       [formControlName]="'txtadult' + (i + 1) + 'date'"
+                       appMovePreviousNextByLength [searchType]="'dateFormat'"
+                       (keyup)="activebtn()"
+                       (focus)="addFocus($event)"
+                       class="tel val-mob val-req numeric jq-dte-day"
+                       appRestrictUserValidation="numberOnly"
+                       placeholder="DD" value="" notranslate="true">
+                <span class="separator">/</span>
+                <input type="tel" [id]="'valid-adult' + (i + 1) + 'month'" maxlength="2"
+                       (focusout)="appendZeroDOB('txtadult' + (i + 1) + 'month'); removeFocus($event)"
+                       #mm
+                       [formControlName]="'txtadult' + (i + 1) + 'month'"
+                       appMovePreviousNextByLength [searchType]="'dateFormat'"
+                       (keyup)="activebtn()"
+                       (focus)="addFocus($event)"
+                       class="tel val-mob val-req numeric jq-dte-month"
+                       appRestrictUserValidation="numberOnly"
+                       placeholder="MM" value="" notranslate="true">
+                <span class="separator1">/</span>
+                <input type="tel" [id]="'valid-adult' + (i + 1) + 'year'" maxlength="4"
+                       #yyyy
+                       [formControlName]="'txtadult' + (i + 1) + 'year'"
+                       (focus)="addFocus($event)"
+                       (focusout)="removeFocus($event)"
+                       appMovePreviousNextByLength [searchType]="'dateFormat'"
+                       (keyup)="activebtn()"
+                       class="tel val-mob val-req numeric jq-dte-year"
+                       appRestrictUserValidation="numberOnly"
+                       placeholder="YYYY" value="" notranslate="true">
+              </div>
+              <div class="dob-close"><a (click)="updateAdultCount(0, i)"></a></div>
+              <span *ngIf="isAdultDOBValid[i+1]" class="ui-error">Please enter valid DOB for Adult {{ i + 1 }}</span>
+
+            </div>
+          </ng-container>
+          <a href="javascript:void(0)" [ngClass]=" isEnable ? 'done-success' : ''"
+             (click)="closeInsureMemberDetails()" class="primary-button small-btn" style="float: right;">Add</a>
+        </div>
+      </div>
+    </div>
+    <div class="adultOuter" tabindex="1" *ngIf="selectedpolicyType !== 'pp'">
+      <div class="input-block steps-row">
+        <div>
+          <span class="AdultB">Kid(s)  </span>
+          <br class="lg-none">
+          <span class="-years-above"> {{selectedpolicyType == 'hap' ? '' : (selectedpolicyType == 'elevate' || selectedpolicyType == 'abc' || selectedpolicyType == 'ab') ? '(3 months - 30 years)': '(3 months - 20 years)'}}</span>
+          <div class="tooltip" *ngIf="selectedpolicyType !== 'hap'">
+            <img src="/docs/default-source/assets/images/tooltip-icon.png">
+            <span class="tooltiptext">The minimum eligible age for a child is 91 days</span>
+          </div>
+        </div>
+        <div class="subs-block">
+          <button class="btn-adults" *ngIf="!isKidDobValidated"
+                  [ngClass]="{'btn-disable':numberofChildss==0}" (click)="updateKidCount(-1)">
+            -
+          </button>
+          <input type="text"
+                 class="mpadultsNo adultsComn" id="maxKidsNo"
+                 name="kidNumber"
+                 maxlength="1"
+                 formControlName="txtnumberofchilds"
+                 value="0"
+                 placeholder="0"
+                 [disabled]="true">
+          <button class="plus-num js-maxpaddskid" *ngIf="!isKidDobValidated"
+                  [ngClass]="{'btn-disable': isAddKidButtonEnabled()}"
+                  (click)="updateKidCount(1)">
+            +
+          </button>
+
+          <a *ngIf="isKidDobValidated" class="maxpeditBtn" (click)="showInsuredKidDetailsPopup()">Edit</a>
+        </div>
+
+      </div>
+
+      <span class="kid_age_note" *ngIf="selectedpolicyType === 'hap'">Your son/daughter of age less than 25 years should be included under kids</span>
+
+      <!--To do-->
+      <div class="adultBoxWrapp" *ngIf="(selectedpolicyType === 'hap' || selectedpolicyType === 'elevate' || selectedpolicyType === 'abc' || selectedpolicyType === 'ab') && numberofChildss != 0 && isKidsDetailsPopup">
+        <ng-container *ngFor="let kid of kidsArray; let i = index">
+          <div class="dob-form-block-new" *ngIf="numberofChildss >= (i + 1)">
+            <div class="input-block-new date-block-new">
+              <label for="ui-dob">Kid {{ i + 1 }} date of birth</label>
+              <input type="tel" [id]="'valid-kid' + (i + 1) + 'Date'" maxlength="2"
+                     (focusout)="appendZeroDOB('txtKid' + (i + 1) + 'Date'); removeFocus($event)"
+                     #dd1
+                     [formControlName]="'txtKid' + (i + 1) + 'Date'"
+                     appMovePreviousNextByLength [searchType]="'dateFormat'"
+                     (keyup)="activebtn()"
+                     (focus)="addFocus($event)"
+                     class="tel val-mob val-req numeric jq-dte-day"
+                     appRestrictUserValidation="numberOnly"
+                     placeholder="DD" value="" notranslate="true">
+              <span class="separator">/</span>
+              <input type="tel" [id]="'valid-kid' + (i + 1) + 'Month'" maxlength="2"
+                     (focusout)="appendZeroDOB('txtKid' + (i + 1) + 'Month'); removeFocus($event)"
+                     #mm1
+                     [formControlName]="'txtKid' + (i + 1) + 'Month'"
+                     appMovePreviousNextByLength [searchType]="'dateFormat'"
+                     (keyup)="activebtn()"
+                     (focus)="addFocus($event)"
+                     class="tel val-mob val-req numeric jq-dte-month"
+                     appRestrictUserValidation="numberOnly"
+                     placeholder="MM" value="" notranslate="true">
+              <span class="separator1">/</span>
+              <input type="tel" [id]="'valid-kid' + (i + 1) + 'Year'" maxlength="4"
+                     #yyyy1
+                     [formControlName]="'txtKid' + (i + 1) + 'Year'"
+                     (focus)="addFocus($event)"
+                     (focusout)="removeFocus($event)"
+                     appMovePreviousNextByLength [searchType]="'dateFormat'"
+                     (keyup)="activebtn()"
+                     class="tel val-mob val-req numeric jq-dte-year"
+                     appRestrictUserValidation="numberOnly"
+                     placeholder="YYYY" value="" notranslate="true">
+            </div>
+            <div class="dob-close"><a (click)="updateKidCount(0, i)"></a></div>
+            <span *ngIf="isKidDOBValid[i+1]" class="ui-error">Please enter valid DOB for Kid {{ i + 1 }}</span>
+          </div>
+        </ng-container>
+
+
+        <a href="javascript:void(0)" [ngClass]=" isEnable ? 'done-success' : ''"
+           (click)="closeInsuredKidDetails()" class="primary-button small-btn" style="float: right;">Add</a>
+      </div>
+    </div>
+    <span class="mem-error" *ngIf="isMobile && isMember">Select at least one member</span>
+
+    <div class="inputWrapp">
+      <div class="input-block il-input-block marRight mobWrapp js_mobileTelattr hapmMobile" [class.transform]="mobileno.value !=''" [class.focus]="mobileno.value !=''">
+        <label for="maxprotec-landing-mobile valid-popmobilnumber" class="">Mobile number</label>
+        <!-- whatsappevent pending -->
+        <input type="tel" appDigitOnly
+               #mobileno
+               appInputFocus
+               formControlName="txtmobilenumber"
+               id="maxprotec-landing-mobile" value="" maxlength="10" autocomplete="off"
+               class="tel numeric maxp-mob-valid val-mob default-input"
+               appRestrictUserValidation="noSpace"
+               (change)="whatsAppOpt();gaEvent('Mobile')" notranslate="true">
+        <!-- <span class="ui-error contact-pop" *ngIf="submitted && (txtmobilenumber?.errors?.['required'] || txtmobilenumber?.errors?.['minlength'] || txtmobilenumber?.errors?.['pattern']) && !showErrMessage">Please enter a valid Mobile number</span> -->
+        <span class="ui-error contact-pop" *ngIf="txtmobilenumber.touched &&  ((txtmobilenumber?.errors?.['required'] || txtmobilenumber?.errors?.['minlength'] || txtmobilenumber?.errors?.['pattern']) && !showErrMessage) || showErrMessage"> Please enter a valid Mobile number</span>
+
+      </div>
+
+      <div class="input-block il-input-block {{isActive}}" [class.transform]="email.value !=''" [class.focus]="email.value !=''">
+        <label for="maxprotec-landing-email" class="">Email</label>
+        <input #email type="email" id="maxprotec-landing-email" value="" autocomplete="off"
+               appInputFocus (change)="gaEvent('Email')"
+               class="maxp-email-valid email-val default-input" maxlength="50"
+               formControlName="txtemail"
+               pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$"
+               appRestrictUserValidation="noSpace" notranslate="true">
+        <span class="ui-error" *ngIf="txtemail.touched && (txtemail?.errors?.['required'] || txtemail?.errors?.['pattern'])">Please enter a valid email id</span>
+      </div>
+      <div class="input-block il-input-block marRight pincodeWrapp" [ngClass]="pincode.value !='' ? 'transform' : ''" *ngIf="selectedpolicyType !== 'pp' && selectedpolicyType !== 'arog' && selectedpolicyType !== 'hb'">
+        <label for="maxprotec-landing-pincode">Pincode</label>
+        <input type="tel" appDigitOnly
+               #pincode
+               appInputFocus
+               formControlName="txtpincode"
+               id="maxprotec-landing-pincode" value="" maxlength="6" autocomplete="off"
+               pattern="(.){6,6}" class="Numeric maxp-pin-valid default-input"
+               appRestrictUserValidation="noSpace" (change)="gaEvent('Pincode')"
+               (input)="validatePincode(pincode.value)" notranslate="true">
+        <!--(keyup)="prevalidatePincode(pincode.value)"-->
+        <span class="ui-error" *ngIf="PincodeSubmitted && (PincodeInvalid || txtpincode?.errors?.['required'] || txtpincode?.errors?.['minlength'])&& !isValidatePin">Please enter a valid pincode</span>
+        <!-- Show validating message -->
+        <span *ngIf="isValidatePin">Validating Pincode</span>
+      </div>
+      <div class="input-block il-input-block nameWrapp" [ngClass]="name.value !='' ? 'transform' : ''" *ngIf="selectedpolicyType === 'hap' || selectedpolicyType === 'hb' || selectedpolicyType === 'max' || selectedpolicyType === 'elevate' || selectedpolicyType === 'abc'|| selectedpolicyType === 'ab'">
+        <label for="maxprotec-landing-name" class="">Name (Optional)</label>
+        <input #name type="text" id="maxprotec-landing-name" value="" autocomplete="off"
+               appInputFocus (change)="gaEvent('Name')" maxlength="50"
+               class="maxp-name-valid name-val default-input"
+               (input)="onNameInput($event)"
+               formControlName="txtName" notranslate="true">
+        <span class="ui-error" *ngIf="submitted && (txtName?.errors?.['required'] || txtName?.errors?.['pattern'])">Please enter a valid Name</span>
+
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2 text-center w100 btnwarpp sm-gq-btn get-fixed">
+        <button #getQuoteBtn type="button" id="city-get-quote" class="btn-primary btn-orange apr-submit-btn"
+                        [disabled]="showGetQuoteButton()" (click)="gaEvent('get_quote_click');proceed();" (keydown.enter)="gaEvent('get_quote_click');proceed();">
+          Get quote
+        </button>
+      </div>
+      <div class="il-blue-sticky">
+        <span>Instant quote, minus the fuss</span>
+        <button class="btn-primary btn-orange" id="getTop" #getQuoteBtn type="button" [disabled]="showGetQuoteButton()"
+                (click)="gaEvent('get_quote_click');proceed();" (keydown.enter)="gaEvent('get_quote_click');proceed();">
+          Get Quote
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
